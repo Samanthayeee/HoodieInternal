@@ -1,0 +1,67 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else {
+    echo "connected to database";
+    if (isset($_GET['hoodie'])) {
+        $id = $_GET['hoodie'];
+    } else {
+        $id = 1;
+    }
+    $all_hoodie_query = "SELECT HoodieID, HoodieName FROM hoodie";
+    $all_hoodie_result = mysqli_query($con, $all_hoodie_query);
+    $this_hoodie_query = "SELECT HoodieName, HoodiePrice FROM hoodie WHERE HoodieID = '" . $_GET['hoodie'] . "'";
+    $this_hoodie_result = mysqli_query($con, $this_hoodie_query);
+    $this_hoodie_record = mysqli_fetch_assoc($this_hoodie_result);
+}
+
+?>
+
+
+<!DOCTYPE html>
+<head>
+    <title> Sam's Hoodies </title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type= "text/css" href="styleV1.css">
+</head>
+<body>
+<header>
+    <h1> Sam's hoodies </h1>
+    <nav>
+        <ul>
+            <li> <a href="Indexpage1.php">HOME </a> </li>
+            <li> <a href="Customerpage1.php">CUSTOMER </a> </li>
+            <li> <a href="Hoodiespage1.php">HOODIES </a> </li>
+            <li> <a href="Orderspage1.php">ORDERS </a> </li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <h2> Hoodie Information </h2>
+    <form name="hoodie_form" id="hoodie_form" method = "get" action ="Hoodiespage1.php">
+        <select id="hoodie" name="hoodie">
+            <?php
+            while($all_hoodie_record = mysqli_fetch_assoc($all_hoodie_result)){
+                echo "<option value = '". $all_hoodie_record['HoodieID'] . "'>";
+                echo $all_hoodie_record ['HoodieName'];
+                echo "</option>";
+            }
+            ?>
+            <!--options-->
+        </select>
+        <input type="Submit" name="hoodie_button" value = "show me the hoodie information">
+    </form>
+    <div id="center">
+        <?php
+        echo "<p> Hoodie ID: " .$this_hoodie_record['HoodieID'] . "<br>";
+        echo "<p> Hoodie Item: " .$this_hoodie_record['HoodieName'] . "<br>";
+        echo "<p> Hoodie Price: " . $this_hoodie_record['HoodiePrice'] ."<br>";
+        ?>
+    </div>
+
+
+
+
+</main>
+</body>
