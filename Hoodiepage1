@@ -11,7 +11,7 @@ else {
     }
     $all_hoodie_query = "SELECT HoodieID, HoodieName FROM hoodie";
     $all_hoodie_result = mysqli_query($con, $all_hoodie_query);
-    $this_hoodie_query = "SELECT HoodieName, HoodiePrice FROM hoodie WHERE HoodieID = '" . $_GET['hoodie'] . "'";
+    $this_hoodie_query = "SELECT HoodieID, HoodieName, HoodiePrice FROM hoodie WHERE HoodieID = '" . $_GET['hoodie'] . "'";
     $this_hoodie_result = mysqli_query($con, $this_hoodie_query);
     $this_hoodie_record = mysqli_fetch_assoc($this_hoodie_result);
 }
