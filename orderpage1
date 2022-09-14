@@ -1,0 +1,76 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else{
+    echo "connected to database";
+}
+if(isset($_GET['order'])){
+    $id = $_GET['order'];
+}else {
+    $id = 1;
+}
+
+$all_order_query = "SELECT * FROM `order`";
+$all_order_result = mysqli_query($con, $all_order_query);
+$this_order_query = "SELECT order.OrderID, order.CustomerID, customer.Fname, 
+customer.CustomerID, order.HoodieID, hoodie.HoodieName, hoodie.HoodieID 
+FROM `order`, customer, hoodie WHERE order.CustomerID = customer.CustomerID 
+AND order.HoodieID = hoodie.HoodieID AND order.OrderID = '" .$id."'";
+$this_order_result = mysqli_query($con, $this_order_query);
+$this_order_record = mysqli_fetch_assoc($this_order_result);
+?>
+<!DOCTYPE html>
+
+<html lang ="en">
+<head>
+    <!-- Website heading -->
+    <!-- setting language to english-->
+    <title> Sams hoodies </title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <!-- links to css page -->
+    <link rel="stylesheet" type="text/css" href="styleV1.css">
+</head>
+<body>
+<h1> Sams HOODIES </h1>
+<nav>
+    <ul>
+        <!--linking pages-->
+        <li>
+            <a href="Indexpage1.php">Home</a>
+        </li>
+        <li>
+            <a href="Hoodiespage1.php">Food </a>
+        </li>
+        <li>
+            <a href="Customerpage1.php">Drinks </a>
+        </li>
+        <li>
+            <a href="Orderspage1.php">Specials </a>
+        </li>
+    </ul>
+</nav>
+<h2> Orders page </h2>
+<form name="order_form" id="order_form" method = "get" action ="Orderspage1.php">
+    <select id="order" name="order">
+        <?php
+        while($all_order_record = mysqli_fetch_assoc($all_order_result)){
+            echo "<option value = '". $all_order_record['OrderID'] . "'>";
+            echo $all_order_record ['OrderID'];
+            echo "</option>";
+        }
+        ?>
+        <!--button for specials page-->
+    </select>
+    <input type="Submit" name="order_button" value = "show me the order information">
+</form>
+<div id="center">
+    <?php
+    echo "<p> Order ID: " . $this_order_record['OrderID'] . "<br>";
+    echo "<p> Hoodie Name: " . $this_order_record['HoodieName'] . "<br>";
+    echo "<p> Customer Name: " . $this_order_record['Fname'] ."<br>";
+    echo "<p> Customer ID: " . $this_order_record['CustomerID'] ."<br>";
+    ?>
+</div>
+</body>
+</html>
