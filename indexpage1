@@ -1,0 +1,28 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else{
+    echo "connected to database";
+}
+?>
+
+<!DOCTYPE html>
+<head>
+    <title> Sam's Hoodies </title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type= "text/css" href="styleV1.css">
+</head>
+<body>
+<header>
+    <h1> Sam's Hoodies</h1>
+    <nav>
+        <ul>
+            <li> <a href="Indexpage1.php">HOME </a> </li>
+            <li> <a href="Customerpage1.php">CUSTOMER </a> </li>
+            <li> <a href="Hoodiespage1.php">HOODIES </a> </li>
+            <li> <a href="Orderspage1.php">ORDERS </a> </li>
+        </ul>
+    </nav>
+</header>
+<main>
