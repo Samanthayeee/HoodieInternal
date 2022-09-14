@@ -1,0 +1,66 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else{
+    echo "connected to database";
+}
+if(isset($_GET['customer'])){
+    $id = $_GET['customer'];
+}else {
+    $id = 1;
+}
+$all_customer_query = "SELECT CustomerID, Fname, Lname FROM customer";
+$all_customer_result = mysqli_query($con, $all_customer_query);
+$this_customer_query = "SELECT CustomerID, Fname, Lname, Phone, Email,Address FROM customer WHERE customer.CustomerID = '" .$id."'";
+$this_customer_result = mysqli_query($con, $this_customer_query);
+$this_customer_record = mysqli_fetch_assoc($this_customer_result);
+
+?>
+
+<!DOCTYPE html>
+<head>
+    <title> Sam's Hoodies </title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type= "text/css" href="styleV1.css">
+</head>
+<body>
+<header>
+    <h1> Sam's hoodies </h1>
+    <nav>
+        <ul>
+            <li> <a href="Indexpage1.php">HOME </a> </li>
+            <li> <a href="Customerpage1.php">CUSTOMER </a> </li>
+            <li> <a href="Hoodiespage1.php">HOODIES </a> </li>
+            <li> <a href="Orderspage1.php">ORDERS </a> </li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <!--Creating food form-->
+    <form name="customer_form" id="customer_form" method = "get" action ="Customerpage1.php">
+        <select id="customer" name="customer">
+            <?php
+            while($all_customer_record = mysqli_fetch_assoc($all_customer_result)){
+                echo "<option value = '". $all_customer_record['CustomerID'] . "'>";
+                echo $all_customer_record ['Fname'];
+                echo $all_customer_record ['Lname'];
+                echo "</option>";
+            }
+
+            ?>
+        </select>
+        <input type="Submit" name="customer_button" value = "show me the customer information">
+    </form>
+    <!--Displaying the item selected-->
+    <div id="center">
+        <?php
+        echo "<p> Customer ID: " .$this_customer_record['CustomerID'] . "<br>";
+        echo "<p> Customer Fname: " .$this_customer_record['Fname'] . "<br>";
+        echo "<p> Customer Lname: " .$this_customer_record['Lname'] ."<br>";
+        echo "<p> Customer Phone: " .$this_customer_record['Phone'] ."<br>";
+        echo "<p> Customer Email: " .$this_customer_record['Email'] ."<br>";
+        echo "<p> Customer Adress: " .$this_customer_record['Address'] ."<br>";
+        ?>
+
+
