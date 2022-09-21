@@ -1,0 +1,16 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+
+
+$HoodieName = $_POST ['HoodieName'];
+$HoodiePrice = $_POST ['HoodiePrice'];
+
+$Insert_hoodie = "INSERT INTO hoodie (HoodieName, HoodiePrice) VALUES ('$HoodieName','$HoodiePrice')";
+
+if (!mysqli_query($con, $Insert_hoodie))
+{
+    echo 'Not Inserted';
+}
+else{
+    echo 'Inserted';
+}
