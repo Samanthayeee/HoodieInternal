@@ -1,0 +1,207 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else {
+    echo "connected to database";
+    if (isset($_GET['hoodie'])) {
+        $id = $_GET['hoodie'];
+    } else {
+        $id = 1;
+    }
+    $all_hoodie_query = "SELECT HoodieID, HoodieName FROM hoodie";
+    $all_hoodie_result = mysqli_query($con, $all_hoodie_query);
+    $this_hoodie_query = "SELECT HoodieID, HoodieName, HoodiePrice FROM hoodie WHERE hoodie.HoodieID = '" .$id."'";
+    $this_hoodie_result = mysqli_query($con, $this_hoodie_query);
+    $this_hoodie_record = mysqli_fetch_assoc($this_hoodie_result);
+}
+
+?>
+
+
+<!DOCTYPE html>
+<head>
+    <title> Sam's Hoodies </title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type= "text/css" href="Style1.css">
+</head>
+<body>
+    <h1> Glamarize </h1>
+    <nav>
+        <ul>
+            <li> <a href="Indexpage1.php">HOME </a> </li>
+            <li> <a href="Hoodiespage1.php">HOODIES </a> </li>
+            <li> <a href="Customerpage1.php">CUSTOMER </a> </li>
+            <li> <a href="Orderspage1.php">ORDERS </a> </li>
+        </ul>
+    </nav>
+<main>
+    <h2> Hoodie Information </h2>
+    <form name="hoodie_form" id="hoodie_form" method = "get" action ="Hoodiespage1.php">
+        <select id="hoodie" name="hoodie">
+            <?php
+            while($all_hoodie_record = mysqli_fetch_assoc($all_hoodie_result)){
+                echo "<option value = '". $all_hoodie_record['HoodieID'] . "'>";
+                echo $all_hoodie_record ['HoodieName'];
+                echo "</option>";
+            }
+            ?>
+            <!--options-->
+        </select>
+        <input type="Submit" name="hoodie_button" value = "show me the hoodie information">
+    </form>
+    <div id="center">
+        <?php
+        echo "<p> Hoodie ID: " .$this_hoodie_record['HoodieID'] . "<br>";
+        echo "<p> Hoodie Item: " .$this_hoodie_record['HoodieName'] . "<br>";
+        echo "<p> Hoodie Price: " . $this_hoodie_record['HoodiePrice'] ."<br>";
+        ?>
+    </div>
+</main>
+</body>
+    <h2> Search drinks </h2>
+        <!--search bar-->
+        <form action ="Hoodiespage1.php" method="post">
+            <input type="text" name='search'>
+            <input type="submit" name="submit" value="search">
+        </form>
+        <?php
+        if(isset($_POST['search'])) {
+            $search = $_POST['search'];
+
+            $query1 = "SELECT * FROM hoodie WHERE HoodieName LIKE '%$search%'";
+            $query = mysqli_query($con,$query1);
+            $count = mysqli_num_rows($query);
+
+            if($count ==0){
+                echo "<p>"."There was no search results";
+            }else{
+
+                while ($row = mysqli_fetch_array($query)) {
+                    echo "<p> Hoodie ID: ".$row ['HoodieID'];
+                    echo "<p> Hoodie Name: ".$row ['HoodieName'];
+                    echo "<p> Hoodie Price: ".$row ['HoodiePrice'];
+
+                }
+            }
+        }
+        ?>
+<h2> Sort Data </h2>
+<!--buttons for sorting data-->
+<div id="spacing">
+    <form action="Hoodiespage1.php" method="post">
+        <input type='submit' name='TestQuery1' value="Hoodie">
+    </form>
+
+    <form action="Hoodiespage1.php" method="post">
+        <input type='submit' name='HoodieNameQuery' value="Sort A-Z">
+    </form>
+
+    <form action="Hoodiespage1.php" method="post">
+        <input type='submit' name='HoodiePriceQuery' value="Cost: Low-High">
+    </form>
+
+    <form action = "Insert.php" method = "post">
+        Hoodie NAME: <input type ="text" name="HoodieName"><br>
+        HOODIE :  <input type ="text" name="HoodiePrice"><br>
+        <input type ="submit" value ="Insert">
+    </form>
+
+
+</div>
+<!--queries for creating tables-->
+<?php
+if(isset($_POST['TestQuery1']))
+{
+    $result=mysqli_query($con, "SELECT * FROM hoodie");
+    if(mysqli_num_rows($result)!=0)
+    {
+        echo "<table>";
+        echo"<thead>";
+        echo"<tr>";
+        echo"<th class='HoodieIDColumn'>drink</th>";
+        echo"<th class='HoodiePriceColumn'>cost </th>";
+        echo"<th class ='HoodieNameColumn'>stock</th>";
+        echo"</tr>";
+        echo"</thead>";
+        while($test = mysqli_fetch_array($result))
+        {
+            $id = $test['HoodieID'];
+
+            echo "<tr>";
+            echo "<td>". $test['HoodieID']. "</td>";
+            echo "<td>". $test['HoodiePrice']. "</td>";
+            echo "<td>". $test['HoodieName']. "</td>";
+            echo "</tr>";
+
+
+        }
+        echo "</table>";
+    }
+}
+?>
+
+<?php
+if(isset($_POST['HoodieNameQuery']))
+{
+    $result=mysqli_query($con, "SELECT * FROM hoodie ORDER BY hoodie.HoodieName ");
+    if(mysqli_num_rows($result)!=0)
+    {
+        echo "<table>";
+        echo"<thead>";
+        echo"<tr>";
+        echo"<th class='HoodieNameColumn'>hoodie</th>";
+        echo"<th class='HoodieIDColumn'>id</th>";
+        echo"<th class ='HoodiePriceColumn'>price</th>";
+        echo"</tr>";
+        echo"</thead>";
+        while($test = mysqli_fetch_array($result))
+        {
+            $id = $test['HoodieID'];
+
+            echo "<tr>";
+            echo "<td>". $test['HoodieName']. "</td>";
+            echo "<td>". $test['HoodiePrice']. "</td>";
+            echo "<td>". $test['HoodieID']. "</td>";
+            echo "</tr>";
+
+
+        }
+        echo "</table>";
+    }
+}
+?>
+
+<?php
+if(isset($_POST['HoodiePriceQuery']))
+{
+    $result=mysqli_query($con, "SELECT * FROM hoodie ORDER BY hoodie.HoodiePrice ASC");
+    if(mysqli_num_rows($result)!=0)
+    {
+        echo "<table>";
+        echo"<thead>";
+        echo"<tr>";
+        echo"<th class='HoodieNameColumn'>hoodie</th>";
+        echo"<th class='HoodieIDColumn'>id</th>";
+        echo"<th class ='HoodiePriceColumn'>price</th>";
+        echo"</tr>";
+        echo"</thead>";
+        while($test = mysqli_fetch_array($result))
+        {
+            $id = $test['HoodieID'];
+
+            echo "<tr>";
+            echo "<td>". $test['HoodieName']. "</td>";
+            echo "<td>". $test['HoodiePrice']. "</td>";
+            echo "<td>". $test['HoodieID']. "</td>";
+            echo "</tr>";
+
+        }
+        echo "</table>";
+    }
+}
+?>
+</body>
+</html>
+
+
