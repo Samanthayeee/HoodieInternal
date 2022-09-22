@@ -1,0 +1,30 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+
+
+$HoodieName = $_POST ['HoodieName'];
+$HoodiePrice = $_POST ['HoodiePrice'];
+$CustomerFname = $_POST ['Fname'];
+$CustomerLname = $_POST ['Lname'];
+$CustomerPhone = $_POST ['Phone'];
+$CustomerEmail = $_POST ['Email'];
+$CustomerAddress = $_POST ['Address'];
+
+$Insert_hoodie = "INSERT INTO hoodie (HoodieName, HoodiePrice) VALUES ('$HoodieName','$HoodiePrice')";
+$Insert_customer = "INSERT INTO customer (Fname, Lname, Phone, Email, Address ) VALUES ('$CustomerFname','$CustomerLname', $CustomerPhone, $CustomerEmail, $CustomerAddress)";
+
+if (!mysqli_query($con, $Insert_hoodie ))
+{
+    echo 'Not Inserted';
+}
+else{
+    echo 'Inserted';
+}
+
+if (!mysqli_query($con, $Insert_customer))
+{
+    echo 'Not Inserted';
+}
+else{
+    echo 'Inserted';
+}
