@@ -1,0 +1,257 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else{
+    echo "connected to database";
+}
+if(isset($_GET['customer'])){
+    $id = $_GET['customer'];
+}else {
+    $id = 1;
+}
+$all_customer_query = "SELECT * FROM customer";
+$all_customer_result = mysqli_query($con, $all_customer_query);
+$this_customer_query = "SELECT * FROM customer WHERE customer.CustomerID = '" .$id."'";
+$this_customer_result = mysqli_query($con, $this_customer_query);
+$this_customer_record = mysqli_fetch_assoc($this_customer_result);
+$update_customer = "SELECT * FROM customer";
+$update_customer_record = mysqli_query($con, $update_customer);
+
+?>
+
+<!DOCTYPE html>
+<head>
+    <title> Sam's Hoodies </title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type= "text/css" href="Style1.css">
+</head>
+<body>
+<header>
+    <h1> Glamarize </h1>
+    <nav>
+        <ul>
+            <li> <a href="Indexpage1.php">HOME </a> </li>
+            <li> <a href="Hoodiespage1.php">HOODIES </a> </li>
+            <li> <a href="Customerpage1.php">CUSTOMER </a> </li>
+            <li> <a href="Orderspage1.php">ORDERS </a> </li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <!--Creating food form-->
+    <form name="customer_form" id="customer_form" method = "get" action ="Customerpage1.php">
+        <select id="customer" name="customer">
+            <?php
+            while($all_customer_record = mysqli_fetch_assoc($all_customer_result)){
+                echo "<option value = '". $all_customer_record['CustomerID'] . "'>";
+                echo $all_customer_record ['Fname'];
+                echo $all_customer_record ['Lname'];
+                echo "</option>";
+            }
+
+            ?>
+        </select>
+        <input type="Submit" name="customer_button" value = "show me the customer information">
+    </form>
+    <!--Displaying the item selected-->
+    <div id="center">
+        <?php
+        echo "<p> Customer ID: " .$this_customer_record['CustomerID'] . "<br>";
+        echo "<p> Customer Fname: " .$this_customer_record['Fname'] . "<br>";
+        echo "<p> Customer Lname: " .$this_customer_record['Lname'] ."<br>";
+        echo "<p> Customer Phone: " .$this_customer_record['Phone'] ."<br>";
+        echo "<p> Customer Email: " .$this_customer_record['Email'] ."<br>";
+        echo "<p> Customer Adress: " .$this_customer_record['Address'] ."<br>";
+        ?>
+        </body>
+
+        <h2> Search drinks </h2>
+        <!--search bar-->
+        <form action ="Customerpage1.php" method="post">
+            <input type="text" name='search'>
+            <input type="submit" name="submit" value="search">
+        </form>
+        <?php
+        if(isset($_POST['search'])) {
+            $search = $_POST['search'];
+
+            $query1 = "SELECT * FROM customer WHERE Fname LIKE '%$search%'";
+            $query = mysqli_query($con,$query1);
+            $count = mysqli_num_rows($query);
+
+            if($count ==0){
+                echo "<p>"."There was no search results";
+            }else{
+
+                while ($row = mysqli_fetch_array($query)) {
+                    echo "<p> Customer ID: ".$row ['CustomerID'];
+                    echo "<p> First Name: ".$row ['Fname'];
+                    echo "<p> Last Name: ".$row ['Lname'];
+                    echo "<p> Phone: ".$row ['Phone'];
+                    echo "<p> Email: ".$row ['Email'];
+                    echo "<p> Address: ".$row ['Address'];
+
+                }
+            }
+        }
+        ?>
+<h2> Sort Data </h2>
+<!--buttons for sorting data-->
+<div id="spacing">
+    <form action="Customerpage1.php" method="post">
+        <input type='submit' name='TestQuery1' value="Customer">
+    </form>
+
+    <form action="Customerpage1.php" method="post">
+        <input type='submit' name='FnameQuery' value="Sort A-Z">
+    </form>
+
+    <form action="Customerpage1.php" method="post">
+        <input type='submit' name='LnameQuery' value="sort A-Z">
+    </form>
+<h2> Add customer </h2>
+    <form action = "Insert.php" method = "post">
+        Customer first name : <input type ="text" name="Fname"><br>
+        Customer last name :  <input type ="text" name="Lname"><br>
+        Phone :  <input type ="text" name="Phone"><br>
+        Email :  <input type ="text" name="Email"><br>
+        Address :  <input type ="text" name="Address"><br>
+        <input type ="submit" value ="Insert">
+    </form>
+    <h2> Update customer </h2>
+    <table>
+        <tr>
+            <th> Customer first name </th>
+            <th> Customer last name</th>
+            <th> Phone </th>
+            <th> Email </th>
+            <th> Address </th>
+        </tr>
+        <?php
+        while ($row = mysqli_fetch_array($update_customer_record))
+        {
+            echo "<tr><form action = Update.php method = post>";
+            echo "<td><input type=text name=Fname value='" .$row['Fname']. "'></td>";
+            echo "<td><input type=text name=Lname value='" .$row['Lname']. "'></td>";
+            echo "<td><input type=text name=Phone value='" .$row['Phone']. "'></td>";
+            echo "<td><input type=text name=Email value='" .$row['Email']. "'></td>";
+            echo "<td><input type=text name=Address value='" .$row['Address']. "'></td>";
+            echo "<input type=hidden name=CustomerID value='" .$row['CustomerID']. "'>";
+            echo "<td><input type= submit></td>";
+            echo "<td><a href=delete.php?CustomerID="  .$row['CustomerID']. ">Delete</a></td>";
+            echo "</form> </tr>";
+        }
+        ?>
+    </table>\
+
+    <!--queries for creating tables-->
+    <?php
+    if(isset($_POST['TestQuery1']))
+    {
+        $result=mysqli_query($con, "SELECT * FROM customer ");
+        if(mysqli_num_rows($result)!=0)
+        {
+            echo "<table>";
+            echo"<thead>";
+            echo"<tr>";
+            echo"<th class='CustomerIDColumn'>ID</th>";
+            echo"<th class='CustomerFnameColumn'>Fname </th>";
+            echo"<th class ='CustomerLnameColumn'>Lname</th>";
+            echo"<th class ='CustomerPhoneColumn'>Phone</th>";
+            echo"<th class ='CustomerAddressColumn'>Address</th>";
+            echo"<th class ='CustomerEmailColumn'>Email</th>";
+            echo"</tr>";
+            echo"</thead>";
+            while($test = mysqli_fetch_array($result))
+            {
+                $id = $test['CustomerID'];
+
+                echo "<tr>";
+                echo "<td>". $test['CustomerID']. "</td>";
+                echo "<td>". $test['Fname']. "</td>";
+                echo "<td>". $test['Lname']. "</td>";
+                echo "<td>". $test['Phone']. "</td>";
+                echo "<td>". $test['Email']. "</td>";
+                echo "<td>". $test['Address']. "</td>";
+                echo "</tr>";
+
+
+            }
+            echo "</table>";
+        }
+    }
+    ?>
+
+    <?php
+    if(isset($_POST['FnameQuery']))
+    {
+        $result=mysqli_query($con, "SELECT * FROM customer ORDER BY customer.Fname ");
+        if(mysqli_num_rows($result)!=0)
+        {
+            echo "<table>";
+            echo"<thead>";
+            echo"<tr>";
+            echo"<th class='CustomerIDColumn'>ID</th>";
+            echo"<th class='CustomerFnameColumn'>Fname </th>";
+            echo"<th class ='CustomerLnameColumn'>Lname</th>";
+            echo"<th class ='CustomerPhoneColumn'>Phone</th>";
+            echo"<th class ='CustomerAddressColumn'>Address</th>";
+            echo"<th class ='CustomerEmailColumn'>Email</th>";
+            echo"</tr>";
+            echo"</thead>";
+            while($test = mysqli_fetch_array($result))
+            {
+                $id = $test['CustomerID'];
+
+                echo "<tr>";
+                echo "<td>". $test['CustomerID']. "</td>";
+                echo "<td>". $test['Fname']. "</td>";
+                echo "<td>". $test['Lname']. "</td>";
+                echo "<td>". $test['Phone']. "</td>";
+                echo "<td>". $test['Email']. "</td>";
+                echo "<td>". $test['Address']. "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        }
+    }
+    ?>
+
+    <?php
+    if(isset($_POST['LnameQuery']))
+    {
+        $result=mysqli_query($con, "SELECT * FROM customer ORDER BY customer.Lname ");
+        if(mysqli_num_rows($result)!=0)
+        {
+            echo "<table>";
+            echo"<thead>";
+            echo"<tr>";
+            echo"<th class='CustomerIDColumn'>ID</th>";
+            echo"<th class='CustomerFnameColumn'>Fname </th>";
+            echo"<th class ='CustomerLnameColumn'>Lname</th>";
+            echo"<th class ='CustomerPhoneColumn'>Phone</th>";
+            echo"<th class ='CustomerAddressColumn'>Address</th>";
+            echo"<th class ='CustomerEmailColumn'>Email</th>";
+            echo"</tr>";
+            echo"</thead>";
+            while($test = mysqli_fetch_array($result))
+            {
+                $id = $test['CustomerID'];
+
+                echo "<tr>";
+                echo "<td>". $test['CustomerID']. "</td>";
+                echo "<td>". $test['Fname']. "</td>";
+                echo "<td>". $test['Lname']. "</td>";
+                echo "<td>". $test['Phone']. "</td>";
+                echo "<td>". $test['Email']. "</td>";
+                echo "<td>". $test['Address']. "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+        }
+    }
+    ?>
+
+
+</div>
