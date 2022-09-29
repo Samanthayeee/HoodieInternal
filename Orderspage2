@@ -1,0 +1,110 @@
+<?php
+$con = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if(mysqli_connect_error()){
+    echo "Failed to connect to MySQL:".mysqli_connect_error(); die();}
+else{
+    echo "connected to database";
+}
+if(isset($_GET['order'])){
+    $id = $_GET['order'];
+}else {
+    $id = 1;
+}
+
+$all_order_query = "SELECT * FROM `order` ";
+$all_order_result = mysqli_query($con, $all_order_query);
+$this_order_query = "SELECT order.OrderID, order.CustomerID, customer.Fname, 
+customer.CustomerID, order.HoodieID, hoodie.HoodieName, hoodie.HoodieID 
+FROM `order`, customer, hoodie 
+WHERE order.CustomerID = customer.CustomerID 
+AND order.HoodieID = hoodie.HoodieID AND order.OrderID = '" .$id."'";
+$this_order_result = mysqli_query($con, $this_order_query);
+$this_order_record = mysqli_fetch_assoc($this_order_result);
+
+/* Update and delete donations query*/
+$update_order = "SELECT * FROM `order` ";
+$update_order_record = mysqli_query($con, $update_order);
+?>
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <!-- Website heading -->
+    <!-- setting language to english-->
+    <title> Sams hoodies </title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+    <!-- links to css page -->
+    <link rel="stylesheet" type="text/css" href="Style7.css">
+</head>
+<body>
+<h1> Sams hoodies </h1>
+<nav>
+    <ul>
+        <!--linking pages-->
+        <li>
+            <a href="Indexpage1.phph">Home</a>
+        </li>
+        <li>
+            <a href="Customerpage1.php">Customer </a>
+        </li>
+        <li>
+            <a href="Hoodiespage1.php">Order </a>
+        </li>
+        <li>
+            <a href="Orderspage1.php">Hoodies </a>
+        </li>
+    </ul>
+</nav>
+<h2> Order page </h2>
+<form name="order_form" id="order_form" method = "get" action ="Orderspage1.php">
+    <select id="order" name="order">
+        <?php
+        while($all_order_record = mysqli_fetch_assoc($all_order_result)){
+            echo "<option value = '". $all_order_record['OrderID'] . "'>";
+            echo $all_order_record ['OrderID'];
+            echo "</option>";
+        }
+        ?>
+        <!--button for specials page-->
+    </select>
+    <input type="Submit" name="order_button" value = "show me the order information">
+</form>
+<div id="center">
+    <?php
+    echo "<p> OrderID: " . $this_order_record['OrderID'] . "<br>";
+    echo "<p> HoodieName: " . $this_order_record['HoodieName'] . "<br>";
+    echo "<p> HoodieID: " . $this_order_record['HoodieID'] . "<br>";
+    echo "<p> Fname: " . $this_order_record['Fname'] ."<br>";
+    echo "<p> CustomerID: " . $this_order_record['CustomerID'] ."<br>";
+    ?>
+</div>
+<h2> Add Order </h2>
+<form action = "Insert_order.php" method = "post">
+    Customer ID :  <input type ="text" name="CustomerID"><br>
+    Hoodie ID:  <input type ="text" name="HoodieID"><br>
+    <input type ="submit" value ="Insert">
+
+<h2> Update customer </h2>
+    <table>
+        <tr>
+            <th> CustomerID </th>
+            <th> HoodieID</th>
+        </tr>
+        <?php
+        while ($row = mysqli_fetch_array($update_order_record))
+        {
+            echo "<tr><form action = Update_order.php method = post>";
+            echo "<td><input type=text name=CustomerID value='" .$row['CustomerID']. "'></td>";
+            echo "<td><input type=text name=HoodieID value='" .$row['HoodieID']. "'></td>";
+            echo "<input type=hidden name=OrderID value='" .$row['OrderID']. "'>";
+            echo "<td><a href=Delete_order.php?CustomerID=" .$row['CustomerID']. ">Delete</a></td>";
+            echo "<td><input type= submit></td>";
+            echo "</form></tr>";
+        }
+        ?>
+    </table>\
+</form>
+</body>
+</html>
