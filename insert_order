@@ -1,0 +1,26 @@
+<?php
+/* Connect to the database */
+$dbcon = mysqli_connect("localhost", "yeesa", "goldmark95", "yeesa_hoodies");
+if($dbcon == NULL) {
+    echo "Could not connect to database";
+    exit();
+}
+
+/* Insert into donations table Query */
+$HoodieID = $_POST['HoodieID'];
+$CustomerID = $_POST['CustomerID'];
+
+$insert_order = "INSERT INTO `order` (HoodieID, CustomerID)  VALUES ('$HoodieID', '$CustomerID')";
+
+/* Check the data has been inserted */
+if(!mysqli_query($dbcon, $insert_order)) {
+    echo 'Inserted Failed!';
+    echo mysqli_error($dbcon);
+} else {
+    echo 'Insert Successful!';
+}
+
+/* Refresh the page after 2 seconds and return to the add_fundraisers.php page */
+ ("refresh:2; url=Orderspage1.php");
+
+?>
