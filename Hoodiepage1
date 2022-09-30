@@ -56,7 +56,7 @@ else {
         <?php
         echo "<p> Hoodie ID: " .$this_hoodie_record['HoodieID'] . "<br>";
         echo "<p> Hoodie Item: " .$this_hoodie_record['HoodieName'] . "<br>";
-        echo "<p> Hoodie Price: " . $this_hoodie_record['HoodiePrice'] ."<br>";
+        echo "<p> Hoodie Price co: " . $this_hoodie_record['HoodiePrice'] ."<br>";
         ?>
     </div>
 
