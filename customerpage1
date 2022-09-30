@@ -37,7 +37,7 @@ $this_customer_record = mysqli_fetch_assoc($this_customer_result);
     </nav>
 </header>
 <main>
-    <!--Creating food form-->
+    <!--Creating customer form-->
     <form name="customer_form" id="customer_form" method = "get" action ="Customerpage1.php">
         <select id="customer" name="customer">
             <?php
