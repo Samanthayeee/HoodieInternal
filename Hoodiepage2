@@ -59,7 +59,8 @@ else {
     </div>
 </main>
 </body>
-    <h2> Search drinks </h2>
+    <h2> Search hoodie
+    </h2>
         <!--search bar-->
         <form action ="Hoodiespage1.php" method="post">
             <input type="text" name='search'>
